@@ -1,0 +1,32 @@
+name: 🚀 Deploy to Somee Hosting
+
+on:
+  push:
+    branches:
+      - main  # Chạy khi có commit lên nhánh main
+
+jobs:
+  deploy:
+    name: Upload via FTP
+    runs-on: ubuntu-latest
+
+    steps:
+      # Bước 1: Lấy source code
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      # (Tùy chọn) Bước 2: Build project nếu là React/Node/C# static site
+      # - name: Build project
+      #   run: npm install && npm run build
+
+      # Bước 3: Deploy qua FTP
+      - name: 📤 Upload to Somee via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftp
+          local-dir: ./   # Thư mục nguồn (thay đổi nếu có folder build)
+          server-dir: /wwwroot/  # Thư mục đích trên host (vd: / hoặc /wwwroot/)
+          log-level: minimal
